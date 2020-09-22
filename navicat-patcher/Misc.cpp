@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <signal.h>
 #include <setjmp.h>
-#include <filesystem>
+#include <experimental/filesystem>
 #include "ExceptionSystem.hpp"
 
+namespace fs = std::experimental::filesystem;
 static jmp_buf g_jmbuf;
 
 static void SIGSEGV_handler(int sig) {
@@ -106,7 +107,7 @@ namespace nkg::Misc {
     [[nodiscard]]
     bool FsIsExist(std::string_view szPath) {
         std::error_code ec;
-        if (std::filesystem::exists(szPath, ec)) {
+        if (std::experimental::filesystem::exists(szPath, ec)) {
             return true;
         } else {
             if (ec) {
@@ -120,11 +121,11 @@ namespace nkg::Misc {
     [[nodiscard]]
     bool FsIsFile(std::string_view szPath) {
         std::error_code ec;
-        if (std::filesystem::is_regular_file(szPath, ec)) {
+        if (std::experimental::filesystem::is_regular_file(szPath, ec)) {
             return true;
         } else {
             if (ec) {
-                throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::filesystem::is_regular_file failed.");
+                throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::experimental::filesystem::is_regular_file failed.");
             } else {
                 return false;
             }
@@ -134,11 +135,11 @@ namespace nkg::Misc {
     [[nodiscard]]
     bool FsIsDirectory(std::string_view szPath) {
         std::error_code ec;
-        if (std::filesystem::is_directory(szPath, ec)) {
+        if (std::experimental::filesystem::is_directory(szPath, ec)) {
             return true;
         } else {
             if (ec) {
-                throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::filesystem::is_directory failed.");
+                throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::experimental::filesystem::is_directory failed.");
             } else {
                 return false;
             }
@@ -147,23 +148,23 @@ namespace nkg::Misc {
 
     void FsCopyFile(std::string_view szSourcePath, std::string_view szDestinationPath) {
         std::error_code ec;
-        if (std::filesystem::copy_file(szSourcePath, szDestinationPath, ec) == false) {
-            throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::filesystem::copy_file failed.");
+        if (std::experimental::filesystem::copy_file(szSourcePath, szDestinationPath, ec) == false) {
+            throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::experimental::filesystem::copy_file failed.");
         }
     }
 
     void FsDeleteFile(std::string_view szPath) {
         std::error_code ec;
-        if (std::filesystem::remove(szPath, ec) == false) {
-            throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::filesystem::remove failed.");
+        if (std::experimental::filesystem::remove(szPath, ec) == false) {
+            throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::experimental::filesystem::remove failed.");
         }
     }
 
     std::string FsCurrentWorkingDirectory() {
         std::error_code ec;
-        std::string path = std::filesystem::current_path(ec);
+        std::string path = std::experimental::filesystem::current_path(ec);
         if (ec) {
-            throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::filesystem::current_path failed.");
+            throw ARL::SystemError(__BASE_FILE__, __LINE__, ec.value(), "std::experimental::filesystem::current_path failed.");
         } else {
             return path;
         }
